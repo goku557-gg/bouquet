@@ -3,230 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>My Bouquet for Achuu 💐</title>
+    <title>For My Life Achuu 💗</title>
     <style>
-        :root {
-            --bg-color: #fce4ec; /* Very light pink */
-            --primary-color: #e91e63; /* Deep pink */
-            --accent-color: #ff80ab; /* Bright pink */
-        }
-
         body {
             margin: 0; padding: 0; overflow: hidden;
-            background: linear-gradient(135deg, var(--bg-color) 0%, #f8bbd0 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ff4d6d; /* Deep Valentine Red/Pink */
+            font-family: 'Segoe UI', Tahoma, sans-serif;
             display: flex; align-items: center; justify-content: center;
-            min-height: 100vh; touch-action: none;
-            color: var(--primary-color);
+            height: 100vh; touch-action: manipulation;
         }
 
-        /* Floating Emojis for the bouquet */
-        .bouquet-emoji {
-            position: absolute;
-            font-size: 30px;
-            pointer-events: none; /* Can't click these background ones */
-            animation: float 10s ease-in-out infinite alternate;
+        /* THE EMOJI BOUQUET BACKGROUND */
+        .bouquet-container {
+            position: fixed; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none;
         }
 
-        @keyframes float {
-            0% { transform: translate(0, 0); opacity: 0.8; }
-            50% { transform: translate(var(--dx), var(--dy)); opacity: 1; }
-            100% { transform: translate(0, 0); opacity: 0.8; }
+        .flower {
+            position: absolute; font-size: 40px;
+            animation: floatBouquet 6s infinite ease-in-out;
         }
 
-        /* The Envelope */
-        #envelope-wrapper {
-            position: relative;
-            z-index: 10;
-            cursor: pointer;
-            animation: pulse 2s infinite;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
-            transition: transform 0.3s ease;
+        @keyframes floatBouquet {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-30px) rotate(20deg); opacity: 1; }
         }
 
-        #envelope-wrapper:active { transform: scale(0.95); }
-
-        .envelope-icon {
-            font-size: 120px; /* Big envelope */
+        /* THE ENVELOPE */
+        #envelope {
+            position: relative; z-index: 10; font-size: 100px;
+            cursor: pointer; animation: heartBeat 1.5s infinite;
+            filter: drop-shadow(0 0 20px white);
         }
 
-        #instruction {
-            position: absolute;
-            bottom: 20vh;
-            font-size: 1.2rem;
-            color: var(--primary-color);
-            font-weight: bold;
-            opacity: 0.8;
-            z-index: 11;
-            animation: fade-in 2s;
-        }
-
-        @keyframes pulse {
+        @keyframes heartBeat {
             0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.3); }
+            70% { transform: scale(1); }
         }
 
-        @keyframes fade-in {
-            from { opacity: 0; }
-            to { opacity: 0.8; }
-        }
-
-        /* The Letter inside */
+        /* THE LETTER */
         #letter-reveal {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 100;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
-            padding: 20px;
-            box-sizing: border-box;
-            overflow-y: auto; /* Allow scrolling for long letters */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 77, 109, 0.95);
+            z-index: 100; display: none; flex-direction: column;
+            align-items: center; justify-content: center; overflow-y: auto;
+            padding: 20px; box-sizing: border-box;
         }
 
-        #letter-reveal.visible {
-            opacity: 1;
-            visibility: visible;
+        .letter-paper {
+            background: white; width: 95%; max-width: 450px;
+            padding: 25px; border-radius: 15px; border: 5px solid #ffccd5;
+            box-shadow: 0 0 50px rgba(0,0,0,0.3);
+            position: relative; overflow: hidden;
         }
 
-        .letter-content {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 10px 40px rgba(var(--primary-color), 0.3);
-            text-align: left;
-            line-height: 1.7;
-            color: #4a4a4a;
-            font-size: 1.1rem;
-            position: relative; /* For the closing X */
+        .letter-paper::before {
+            content: '💋💋💋💋💋'; position: absolute; top: 0; width: 100%;
+            font-size: 20px; opacity: 0.2; text-align: center;
         }
 
-        .letter-content h2 {
-            text-align: center;
-            color: var(--primary-color);
-            font-size: 1.8rem;
-            margin-bottom: 20px;
+        .letter-text {
+            color: #333; line-height: 1.6; font-size: 1.05rem;
+            white-space: pre-line; font-weight: 600;
         }
 
-        .closing-x {
-            position: absolute;
-            top: 15px; right: 20px;
-            font-size: 1.8rem;
-            color: #888;
-            cursor: pointer;
-            font-weight: bold;
-            transition: color 0.3s;
-        }
-        .closing-x:hover { color: var(--primary-color); }
-
-        /* Kissing effects on click */
-        .effect-kiss {
-            position: fixed; pointer-events: none; z-index: 200;
-            font-size: 35px; animation: fly-away 1s forwards;
-            filter: drop-shadow(1px 1px 3px rgba(0,0,0,0.1));
+        /* ANIMATED ELEMENTS */
+        .kiss-rain {
+            position: fixed; font-size: 30px; z-index: 200;
+            pointer-events: none; animation: fall 3s linear forwards;
         }
 
-        @keyframes fly-away {
-            0% { transform: scale(1) translateY(0); opacity: 1; }
-            100% { transform: scale(2) translateY(-100px) rotate(20deg); opacity: 0; }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
         }
+
+        .highlight { color: #ff4d6d; font-weight: 900; }
     </style>
 </head>
 <body>
 
-    <div id="instruction">Tap the envelope to open my heart... 💌</div>
+    <div class="bouquet-container" id="bouquet"></div>
 
-    <div id="envelope-wrapper">
-        <span class="envelope-icon">💌</span>
-    </div>
+    <div id="envelope" onclick="openLetter()">💌</div>
 
-    <div id="letter-reveal">
-        <div class="letter-content">
-            <span class="closing-x" onclick="closeLetter()">✖</span>
-            <h2>Happy Valentine's day chakkarey! 😘😘😘😘💕</h2>
-            <p>Eee Njan ellam paranjun ariyam but still it's not enough, eee Njan ahh website indakkipoo oru kariyam realise cheythu...</p>
-            <p>Eee codeun emojium okke just symbols mathrama but enik ninodu olla aa love and Sneham parayan vendi Njan peduna ee paadu just enik nine bayankara ishttattvaa 😭💗 but I still know words can't express the feeling am having force you 🥺💗 enik ente manasil ollath akkey parayanon ind chakkarey 🫠🫠 but Athellam enich ninodu ayitt paranja mathi not like this real ayitt enik ethoro ariyuuuuu 😭😭😭😭😭😭</p>
-            <p style="text-align: center; font-size: 1.5rem; color: var(--primary-color); font-weight: bold;">
-                Loveeeeeee youuuuuuuuuuuu sooooooooooo muchhhhhhhh 😭💗
-            </p>
-            <p>Love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love youuuuuuuuuuuuuuuuuuuuuuuuu , nee ente jeevanaa 😭💗, lokamaa , enik nee allathe verey onnum venda Achu 🥺 I promise you I will love you until my last breath 🥺💗💗🫂.</p>
-            <p>Enik sherikkum eee lokath nee allathe verey onnum venda achuuuuuu 😭😭😭😭😭😭😭😭😭😭 enik nee mathram mathi ente ayitt 🫠 loveeeeeeeeeeee youuuuuuuuuuuuuu soooooooooo muchhhh 🥺💗</p>
-            <p style="text-align: right; margin-top: 30px; font-weight: bold; color: var(--primary-color);">Your Love 💋</p>
+    <div id="letter-reveal" id="reveal">
+        <div class="letter-paper">
+            <div id="typewriter" class="letter-text"></div>
+            <div style="font-size: 30px; text-align: center; margin-top: 15px;">💋💋💋💋💋💋💋💋💋</div>
         </div>
+        <button onclick="location.reload()" style="margin-top:20px; padding:10px 20px; border-radius:20px; border:none; background:white; color:#ff4d6d; font-weight:bold;">Send More Kisses 💋</button>
     </div>
 
     <script>
-        const lovingEmojis = ['❤️', '💖', '💕', '💘', '💞', '💓', '💗', '💋', '😘', '🫂', '💌'];
-        const numBouquetEmojis = 50; // How many emojis in the background bouquet
-
-        // Generate the floating emoji bouquet
-        for (let i = 0; i < numBouquetEmojis; i++) {
-            const emoji = document.createElement('div');
-            emoji.className = 'bouquet-emoji';
-            emoji.innerHTML = lovingEmojis[Math.floor(Math.random() * lovingEmojis.length)];
-            emoji.style.left = Math.random() * 100 + 'vw';
-            emoji.style.top = Math.random() * 100 + 'vh';
-            // Random movement for each emoji
-            emoji.style.setProperty('--dx', (Math.random() * 200 - 100) + 'px');
-            emoji.style.setProperty('--dy', (Math.random() * 200 - 100) + 'px');
-            document.body.appendChild(emoji);
+        const bouquet = document.getElementById('bouquet');
+        const flowers = ['🌹', '🌸', '💐', '🌺', '🌷', '💝', '💖', '💋', '😘', '😋'];
+        
+        // Create the Bouquet
+        for(let i=0; i<60; i++) {
+            let f = document.createElement('div');
+            f.className = 'flower';
+            f.innerHTML = flowers[Math.floor(Math.random()*flowers.length)];
+            f.style.left = Math.random() * 100 + 'vw';
+            f.style.top = Math.random() * 100 + 'vh';
+            f.style.animationDelay = Math.random() * 5 + 's';
+            bouquet.appendChild(f);
         }
 
-        // --- Envelope and Letter Logic ---
-        document.getElementById('envelope-wrapper').onclick = openLetter;
+        const text = `Happy valentine's day chakkarey 😘😘😘😘💕 
+
+        Eeee Njan ellam paranjun ariyam but still it's not enough... 🫠 Eee Njan ahh website indakkipoo oru kariyam realise cheythu. 
+
+        Eee codeun emojium okke just symbols mathrama but enik ninodu olla aa love and Sneham parayan vendi Njan peduna ee paadu just enik nine bayankara ishttattvaa 😭💗 but I still know words can't express the feeling am having for you 🥺💗. 
+
+        Enik ente manasil ollath akkey parayanon ind chakkarey 🫠🫠 but Athellam enich ninodu ayitt paranja mathi not like this, real ayitt enik ethoro ariyuuuuu 😭😭😭😭😭😭 
+
+        Loveeeeeee youuuuuuuuuuuu sooooooooooo muchhhhhhhh 😭💗 
+        
+        Love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love you love youuuuuuuuuuuuuuuuuuuuuuuuu 💋💋💋💋💋💋
+
+        Nee ente jeevanaa 😭💗, lokamaa , enik nee allathe verey onnum venda Achu 🥺 I promise you I will love you until my last breath 🥺💗💗🫂. 
+
+        Enik sherikkum eee lokath nee allathe verey onnum venda achuuuuuu 😭😭😭😭😭😭😭😭😭😭 enik nee mathram mathi ente ayitt 🫠 
+
+        Loveeeeeeeeeeee youuuuuuuuuuuuuu soooooooooo muchhhh 🥺💗💋💋💋💋`;
 
         function openLetter() {
-            document.getElementById('envelope-wrapper').style.opacity = '0';
-            document.getElementById('instruction').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('envelope-wrapper').style.display = 'none';
-                document.getElementById('instruction').style.display = 'none';
-                document.getElementById('letter-reveal').classList.add('visible');
-                // Trigger a kiss explosion when the letter opens!
-                for(let i=0; i<20; i++) {
-                    setTimeout(() => createEffect(
-                        Math.random() * window.innerWidth, 
-                        Math.random() * window.innerHeight
-                    ), i * 50);
+            document.getElementById('envelope').style.display = 'none';
+            document.getElementById('letter-reveal').style.display = 'flex';
+            
+            let i = 0;
+            const speed = 40; 
+            function typeWriter() {
+                if (i < text.length) {
+                    document.getElementById("typewriter").innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, speed);
                 }
-            }, 300); // Allow time for envelope to fade
-        }
-
-        function closeLetter() {
-            document.getElementById('letter-reveal').classList.remove('visible');
-            setTimeout(() => {
-                document.getElementById('envelope-wrapper').style.display = 'flex'; // Or block/inline-block
-                document.getElementById('instruction').style.display = 'block';
-                document.getElementById('envelope-wrapper').style.opacity = '1';
-                document.getElementById('instruction').style.opacity = '0.8';
-            }, 500); // Allow time for letter to fade out
-        }
-
-        // Universal kiss effect on any tap on the letter
-        document.getElementById('letter-reveal').addEventListener('click', (e) => {
-            if (e.target.tagName !== 'SPAN') { // Don't trigger on close button
-                createEffect(e.clientX, e.clientY);
             }
-        });
-
-        function createEffect(x, y) {
-            const effect = document.createElement('div');
-            effect.className = 'effect-kiss';
-            // Randomly pick a kiss emoji for the effect
-            effect.innerHTML = lovingEmojis[Math.floor(Math.random() * 3)]; // Just kiss, heart emojis for explosion
-            effect.style.left = x + 'px';
-            effect.style.top = y + 'px';
-            document.body.appendChild(effect);
-            setTimeout(() => effect.remove(), 1000);
+            typeWriter();
+            setInterval(createKiss, 200);
         }
 
+        function createKiss() {
+            const k = document.createElement('div');
+            k.className = 'kiss-rain';
+            k.innerHTML = Math.random() > 0.5 ? '💋' : '😘';
+            k.style.left = Math.random() * 100 + 'vw';
+            k.style.top = '-50px';
+            document.body.appendChild(k);
+            setTimeout(() => k.remove(), 3000);
+        }
     </script>
 </body>
 </html>
